@@ -4,7 +4,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include "Event.h"
+#include "aq/Event.h"
 
 #if defined(_MSC_VER)
 #include "Event_WIN32.cpp"
@@ -12,16 +12,20 @@
 #include "Event_POSIX.cpp"
 #endif
 
-Event::Event(EventType type): EventImpl((EventTypeImpl) type)
-{
-}
+namespace aq{
+
+    Event::Event(EventType type): EventImpl((EventTypeImpl) type)
+    {
+    }
 
 
-Event::Event(bool autoReset): EventImpl(autoReset ? EVENT_AUTORESET_IMPL : EVENT_MANUALRESET_IMPL)
-{
-}
+    Event::Event(bool autoReset): EventImpl(autoReset ? EVENT_AUTORESET_IMPL : EVENT_MANUALRESET_IMPL)
+    {
+    }
 
 
-Event::~Event()
-{
-}
+    Event::~Event()
+    {
+    }
+
+} // namespace aq
