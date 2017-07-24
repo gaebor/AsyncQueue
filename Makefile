@@ -23,5 +23,5 @@ clean:
 
 run: test
 	./bin/test -h
-	./bin/test -r 15 -s 100000
-	./bin/test -r 12 -s 100000 -f
+	./bin/test -r 15
+	./bin/test -r 12 -f

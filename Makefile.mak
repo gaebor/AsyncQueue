@@ -1,4 +1,4 @@
-CPPFLAGS=/O2 /EHsc /Iinc /W4 -nologo
+CPPFLAGS=/O2 /EHsc /Iinc /W4 /nologo
 
 default: test
 
@@ -23,5 +23,5 @@ clean:
 
 run: test
 	bin\test.exe -h
-	bin\test.exe -r 15 -s 100000
-    bin\test.exe -r 12 -s 100000 -f
+	bin\test.exe -r 15
+    bin\test.exe -r 12 -f

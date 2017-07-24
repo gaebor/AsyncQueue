@@ -3,6 +3,7 @@
 
 #include <exception>
 
+//! namespace AsyncQueue
 namespace aq {
 
     class Exception : public std::exception

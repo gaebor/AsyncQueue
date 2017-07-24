@@ -13,6 +13,7 @@
 #undef max
 #endif // max
 
+//! namespace AsyncQueue
 namespace aq {
 
     //!simple producer/consumer tool
@@ -30,12 +31,26 @@ namespace aq {
         //! you can control the behaviour of the overloaded queue
         enum LimitBehavior
         {
-            None, //!< the queue can grow as much as it can
+            None, //!< the queue can grow as much as it can, queueLimit is irrelevant
             Drop, //!< drop elements if queue size is above the given limit
-            //Full, //!< refuse to enqueue elements if queue size is above the given limit
-            Wait //!< waits the enqueue-s until the queue size drops below the given limit
+            Wait, //!< wait until the queue size drops below the given limit
+            Refuse, //!< refuse to enqueue elements if queue size is above the given limit
         };
-        std::atomic<LimitBehavior> limitBehavior; //!< limit behaviour can be adjusted at any time
+        //! specifies limit behaviour
+        /*!
+            it can be adjusted at any time (thread safe)
+            invalid value is treated as None
+        */
+        std::atomic<LimitBehavior> limitBehavior;
+        //! the size limit of the queue
+        /*!
+            it can be adjusted at any time (thread safe)
+
+            If the queueLimit is zero and the limitBehavior is Refuse then every EnQueue fails
+            If the queueLimit is zero and the limitBehavior is Wait then you can still enqueue one element
+            If the queueLimit is zero and the limitBehavior is Drop then every EnQueue empties the queue, but you can enqueue one element
+            If the limitBehavior is None then queueLimit is irrelevant
+        */
         std::atomic<size_t> queueLimit;
 
         AsyncQueue(LimitBehavior l = None)
@@ -67,19 +82,32 @@ namespace aq {
             if the behaviour is Drop and the queue is long, then the entire queue is dropped and the new one is enqueued
             if the EnQueue is in a locking state and a WakeUp is called, then the enqueue fails and the functions returns
         */
-        void EnQueue(const _Ty& element)
+        bool EnQueue(const _Ty& element)
         {
             if (limitBehavior == Wait)
                 _belowLimit.wait();
-
+            // the queue can change its size here
             AutoLock lock(_mutex);
-            if (limitBehavior == Drop && _queue.size() >= queueLimit)
+            if (_queue.size() >= queueLimit)
             {
-                while (!_queue.empty())
-                    _queue.pop();
+                switch (limitBehavior)
+                {
+                case LimitBehavior::Refuse:
+                    return false;
+                case LimitBehavior::Drop:
+                    while (!_queue.empty())
+                        _queue.pop();
+                    break;
+                case LimitBehavior::Wait:
+                    _belowLimit.wait();
+                    break;
+                default: break;
+                }
                 _belowLimit.set();
             }
-
+            //if (_content.)
+            //    return false;
+            //TODO prevent Enqueue after Wakeup
             _queue.push(element);
             if (SeeHighWater)
                 _highWater = (_queue.size() > _highWater ? _queue.size() : _highWater);
@@ -87,6 +115,7 @@ namespace aq {
             _empty.reset();
             if (_queue.size() >= queueLimit)
                 _belowLimit.reset();
+            return true;
         }
 
         //! extract one item from the queue
@@ -132,7 +161,9 @@ namespace aq {
             _empty.set();
             return result;
         }
+        //! does not lock, therefore result is only an estimate
         size_t GetSize() const { return _queue.size(); }
+        //! does not lock
         size_t GetHighWater() const { return _highWater; }
     private:
         bool DeQueue_internal(_Ty& element)
