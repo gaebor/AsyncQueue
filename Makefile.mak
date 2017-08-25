@@ -1,4 +1,4 @@
-CPPFLAGS=/O2 /EHsc /Iinc /W4 /nologo
+CPPFLAGS=/O2 /Ot /DNDEBUG /EHsc /Iinc /W4 /nologo /MD
 
 default: test
 
