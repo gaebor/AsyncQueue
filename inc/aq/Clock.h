@@ -5,11 +5,19 @@
 
 namespace aq {
 
+	//! simple class to measure time, not thread safe!
     class Clock
     {
     public:
+		//! marks instantiation time
         Clock();
+		//! marks current time
         void Tick();
+		//! returns time between former time mark and now
+		/*!
+			@return time since last Tick, Tock or construction.
+			Also marks the current time (implies Tick)
+		*/
         double Tock();
         ~Clock();
     private:
