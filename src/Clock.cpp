@@ -23,7 +23,6 @@ namespace aq {
     {
         auto const now = MyClock::now();
         const auto elapsed = _frequency * (now - _timePoint).count();
-        _timePoint = now;
         return elapsed;
     }
 

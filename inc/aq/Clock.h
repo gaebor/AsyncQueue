@@ -15,8 +15,7 @@ namespace aq {
         void Tick();
 		//! returns time between former time mark and now
 		/*!
-			@return time since last Tick, Tock or construction.
-			Also marks the current time (implies Tick)
+			@return time since last Tick, construction.
 		*/
         double Tock();
         ~Clock();
