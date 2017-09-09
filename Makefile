@@ -1,27 +1,27 @@
 CPPFLAGS+=-O2 -std=c++11 -pthread -Wall
 CPP=g++
 
+OUT_DIR=bin
+dummy_build_folder := $(shell mkdir -p $(OUT_DIR))
+
 default: test
 
-dir:
-	mkdir -p bin
-    
-asyncqueue: dir bin/libasyncqueue.a
+asyncqueue: $(OUT_DIR)/libasyncqueue.a
 
 %.o : %.cpp
 	$(CPP) -c $(CPPFLAGS) -Iinc $< -o $@
 
-bin/libasyncqueue.a: src/Clock.o src/Event.o src/Exception.o
+$(OUT_DIR)/libasyncqueue.a: src/Clock.o src/Event.o src/Exception.o inc/aq/AsyncQueue.h
 	$(AR) rcs $@ $^
 
-test: bin/test
-bin/test: asyncqueue src/Test.o
+test: $(OUT_DIR)/test
+$(OUT_DIR)/test: asyncqueue src/Test.o
 	$(CPP) $(CPPFLAGS) -Lbin -o $@ src/Test.o -lasyncqueue 
     
 clean:
-	rm -f src/*.o bin/libasyncqueue.a bin/test
+	rm -f src/*.o $(OUT_DIR)/libasyncqueue.a $(OUT_DIR)/test
 
 run: test
-	./bin/test -h
-	./bin/test -r 15
-	./bin/test -r 12 -f
+	./$(OUT_DIR)/test -h
+	./$(OUT_DIR)/test -r 15
+	./$(OUT_DIR)/test -r 12 -f

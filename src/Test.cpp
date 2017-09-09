@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
                 HighWaterQueue::LimitBehavior::Wait, HighWaterQueue::LimitBehavior::Refuse);
             printf("\t-r <int>\tbitfield containing which tests should run, default is %d\n", run);
             printf("\t\t1: enqueue all elements, then dequeue all in one thread\n");
-            printf("\t\t2: enqueue one elements, then dequeue immediately, do this for all elements (one thread)\n");
+            printf("\t\t2: enqueue one element, then dequeue immediately, do this for all elements (one thread)\n");
             printf("\t\t4: starts enqueue thread, starts dequeue thread, waits for enqueue all, then optionally force halt or waits dequeue\n");
             printf("\t\t8: like above, but starts two enqueue thread: first thread enqueues half of the elements, second thread the other half. Also two dequeue threads\n");
             return 0;
@@ -184,12 +184,8 @@ int main(int argc, char* argv[])
 		});
 		std::thread consumer([&]()
 		{
-			for (; true;)
-			{
-				if (!queue.DeQueue(output1))
-					break;
+			while (queue.DeQueue(output1))
 				++dequeued;
-			}
 		});
 
 		pusher.join();
@@ -246,22 +242,14 @@ int main(int argc, char* argv[])
 
 		std::thread consumer1([&]()
 		{
-			for (; true;)
-			{
-				if (!queue.DeQueue(output1))
-					break;
+			while (queue.DeQueue(output1))
 				++dequeued1;
-			}
 		});
 
 		std::thread consumer2([&]()
 		{
-			for (; true;)
-			{
-				if (!queue.DeQueue(output2))
-					break;
+			while (queue.DeQueue(output2))
 				++dequeued2;
-			}
 		});
 
 		pusher1.join();
