@@ -84,38 +84,35 @@ namespace aq {
         */
         bool EnQueue(const _Ty& element)
         {
-            if (limitBehavior == Wait)
-                _belowLimit.wait();
-            // the queue can change its size here
-            AutoLock lock(_mutex);
-            if (_queue.size() >= queueLimit)
-            {
-                switch (limitBehavior)
-                {
-                case LimitBehavior::Refuse:
-                    return false;
-                case LimitBehavior::Drop:
-                    while (!_queue.empty())
-                        _queue.pop();
-                    break;
-                case LimitBehavior::Wait:
-                    _belowLimit.wait();
-                    break;
-                default: break;
-                }
-                _belowLimit.set();
-            }
-            //if (_content.)
-            //    return false;
-            //TODO prevent Enqueue after Wakeup
-            _queue.push(element);
-            if (SeeHighWater)
-                _highWater = (_queue.size() > _highWater ? _queue.size() : _highWater);
-            _content.set();
-            _empty.reset();
-            if (_queue.size() >= queueLimit)
-                _belowLimit.reset();
-            return true;
+			switch (limitBehavior)
+			{
+			case LimitBehavior::Drop:
+				if (_queue.size() >= queueLimit)
+				{
+					AutoLock lock(_mutex);
+					while (!_queue.empty())
+						_queue.pop();
+					EnQueue_internal(element);
+					return true;
+				}
+			case LimitBehavior::Refuse:
+				if (_queue.size() >= queueLimit)
+					return false;
+				else
+				{
+					AutoLock lock(_mutex);
+					EnQueue_internal(element);
+					return true;
+				}
+			case LimitBehavior::Wait:
+				_belowLimit.wait();
+			default:
+			{
+				AutoLock lock(_mutex);
+				EnQueue_internal(element);
+				return true;
+			}
+			}
         }
 
         //! extract one item from the queue
@@ -136,8 +133,7 @@ namespace aq {
 
         bool DeQueue(_Ty& element, long miliseconds)
         {
-            _content.tryWait(miliseconds);
-            return DeQueue_internal(element);
+			return _content.tryWait(miliseconds) && DeQueue_internal(element);
         }
 
         //!this causes the DeQueue to return false if the queue was empty, otherwise nothing happens
@@ -166,13 +162,23 @@ namespace aq {
         //! does not lock
         size_t GetHighWater() const { return _highWater; }
     private:
+		void EnQueue_internal(const _Ty& element)
+		{
+			_queue.push(element);
+			if (SeeHighWater)
+				_highWater = (_queue.size() > _highWater ? _queue.size() : _highWater);
+			_content.set();
+			_empty.reset();
+			if (_queue.size() >= queueLimit)
+				_belowLimit.reset();
+		}
         bool DeQueue_internal(_Ty& element)
         {
             AutoLock lock(_mutex);
             if (_queue.empty())
             {
+				_content.reset();
                 _empty.set();
-                _content.reset();
                 _belowLimit.set();
                 return false;
             }
