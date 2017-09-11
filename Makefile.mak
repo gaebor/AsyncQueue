@@ -25,5 +25,12 @@ clean:
 
 run: test
 	$(OUT_DIR)\test.exe -h
-	$(OUT_DIR)\test.exe -r 15
-    $(OUT_DIR)\test.exe -r 12 -f
+	$(OUT_DIR)\test.exe -r 15 -n 20 -l 2000 -b 0
+	$(OUT_DIR)\test.exe -r 15 -n 20 -l 2000 -b 1
+	$(OUT_DIR)\test.exe -r 14 -n 20 -l 2000 -b 2
+	$(OUT_DIR)\test.exe -r 15 -n 20 -l 2000 -b 3
+	
+	$(OUT_DIR)\test.exe -r 12 -n 20 -l 20000 -b 0 -f
+	$(OUT_DIR)\test.exe -r 12 -n 20 -l 20000 -b 1 -f
+	$(OUT_DIR)\test.exe -r 12 -n 20 -l 20000 -b 2 -f
+	$(OUT_DIR)\test.exe -r 12 -n 20 -l 20000 -b 3 -f

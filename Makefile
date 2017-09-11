@@ -15,13 +15,21 @@ $(OUT_DIR)/libasyncqueue.a: src/Clock.o src/Event.o src/Exception.o inc/aq/Async
 	$(AR) rcs $@ $^
 
 test: $(OUT_DIR)/test
+
 $(OUT_DIR)/test: asyncqueue src/Test.o
 	$(CPP) $(CPPFLAGS) -Lbin -o $@ src/Test.o -lasyncqueue 
-    
+
 clean:
 	rm -f src/*.o $(OUT_DIR)/libasyncqueue.a $(OUT_DIR)/test
 
 run: test
 	./$(OUT_DIR)/test -h
-	./$(OUT_DIR)/test -r 15
-	./$(OUT_DIR)/test -r 12 -f
+	./$(OUT_DIR)/test -r 15 -n 20 -l 2000 -b 0
+	./$(OUT_DIR)/test -r 15 -n 20 -l 2000 -b 1
+	./$(OUT_DIR)/test -r 14 -n 20 -l 2000 -b 2
+	./$(OUT_DIR)/test -r 15 -n 20 -l 2000 -b 3
+	
+	./$(OUT_DIR)/test -r 12 -n 20 -l 20000 -b 0 -f
+	./$(OUT_DIR)/test -r 12 -n 20 -l 20000 -b 1 -f
+	./$(OUT_DIR)/test -r 12 -n 20 -l 20000 -b 2 -f
+	./$(OUT_DIR)/test -r 12 -n 20 -l 20000 -b 3 -f
