@@ -22,7 +22,7 @@ namespace aq {
     private:
         typedef std::chrono::steady_clock MyClock;
         typedef MyClock::duration MyDuration;
-        std::chrono::time_point<MyClock, MyDuration> _timePoint;
+		MyClock::time_point _timePoint;
         static const double _frequency;
         static double GetFrequency();
     };
