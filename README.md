@@ -6,7 +6,7 @@ GNU `make`, or `nmake` on Visual C++.
 
 ## test
 The (n)make target `run` tests for every scenario.
-See `test` target or details.
+See `aqtest -h` for details.
 
 ## usage
 Link against the `asyncqueue` static library and enable C++11 in your code.
