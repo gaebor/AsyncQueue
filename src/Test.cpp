@@ -71,9 +71,9 @@ int main(int argc, char* argv[])
                 "\t\t%d drop when above limit\n"
                 "\t\t%d wait until queue reduces below the limit\n"
                 "\t\t%d refuse to enqueue if above the limit\n",
-                (HighWaterQueue::LimitBehavior)queue.limitBehavior,
-                HighWaterQueue::LimitBehavior::None, HighWaterQueue::LimitBehavior::Drop,
-                HighWaterQueue::LimitBehavior::Wait, HighWaterQueue::LimitBehavior::Refuse);
+                (aq::LimitBehavior)queue.limitBehavior,
+                aq::LimitBehavior::None, aq::LimitBehavior::Drop,
+                aq::LimitBehavior::Wait, aq::LimitBehavior::Refuse);
             printf("\t-r <int>\tbitfield containing which tests should run, default is %d\n", run);
             printf("\t\t1: enqueue all elements, then dequeue all in one thread\n");
             printf("\t\t2: enqueue one element, then dequeue immediately, do this for all elements (one thread)\n");
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
         }
         else if (arg_str == "-b" && argc > 0)
         {
-            queue.limitBehavior = HighWaterQueue::LimitBehavior(atoi(*++argv));
+            queue.limitBehavior = aq::LimitBehavior(atoi(*++argv));
             --argc;
         }
 	}

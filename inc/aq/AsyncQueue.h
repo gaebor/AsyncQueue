@@ -15,7 +15,16 @@
 
 //! namespace AsyncQueue
 namespace aq {
-
+    
+    //! you can control the behavior of the overloaded queue
+    enum LimitBehavior
+    {
+        None, //!< the queue can grow as much as it can, queueLimit is irrelevant
+        Drop, //!< drop elements if queue size is above the given limit
+        Wait, //!< wait until the queue size drops below the given limit
+        Refuse, //!< refuse to enqueue elements if queue size is above the given limit
+    };
+    
     //!simple producer/consumer tool
     /*!
         the queue can be fed and consumed by many threads
@@ -28,15 +37,7 @@ namespace aq {
     private:
         typedef std::lock_guard<std::mutex> AutoLock;
     public:
-        //! you can control the behaviour of the overloaded queue
-        enum LimitBehavior
-        {
-            None, //!< the queue can grow as much as it can, queueLimit is irrelevant
-            Drop, //!< drop elements if queue size is above the given limit
-            Wait, //!< wait until the queue size drops below the given limit
-            Refuse, //!< refuse to enqueue elements if queue size is above the given limit
-        };
-        //! specifies limit behaviour
+        //! specifies limit behavior
         /*!
             it can be adjusted at any time (thread safe)
             invalid value is treated as None
