@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
             printf("\t-n <int>\tlogarithm of number of elements to enqueue, total elements = 2^n, default is 2^%d=%zu\n", (int)log2(n), n);
             printf("\t-s <int>\tsleep parameter, forces the enqueue to be slower, default is %zu\n", sleep_constant);
             printf("\t-f\tperforms force halt, drops elements from the queue, default is %s\n", force_halt ? "true" : "false");
-            printf("\t-m\tuses %s messages if set, otherwise POD messages, default is %d\n", typeid(ManagedMessage).name(), managed);
+            printf("\t-m <int>\tuses \"%s\" messages if set, otherwise \"%s\", default is %d\n", typeid(ManagedMessage).name(), typeid(PodMessage).name(), managed);
             printf("\t-l <int>\tqueue length limit, see -b, default is %zu\n", queueLimit);
             printf("\t-b <int>\toverloaded queue behavior, default is %d\n"
                 "\t\t%d does nothing\n"
