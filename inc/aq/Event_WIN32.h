@@ -7,6 +7,7 @@
 #ifndef Event_WIN32_INCLUDED
 #define Event_WIN32_INCLUDED
 
+#define NOMINMAX
 #include<windows.h>
 
 #include "aq/Exception.h"

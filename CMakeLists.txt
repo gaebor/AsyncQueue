@@ -32,19 +32,19 @@ add_test(test_one_by_one_Wait aqtest -r 2 -n 20 -l 2000 -b 2)
 add_test(test_parallel_Wait   aqtest -r 4 -n 20 -l 2000 -b 2)
 add_test(test_parallel2_Wait  aqtest -r 8 -n 20 -l 2000 -b 2)
 
-add_test(test_one_by_one_Refuse aqtest -r 1 -n 20 -l 2000 -b 3)
+add_test(test_seq_Refuse        aqtest -r 1 -n 20 -l 2000 -b 3)
 add_test(test_one_by_one_Refuse aqtest -r 2 -n 20 -l 2000 -b 3)
 add_test(test_parallel_Refuse   aqtest -r 4 -n 20 -l 2000 -b 3)
 add_test(test_parallel2_Refuse  aqtest -r 8 -n 20 -l 2000 -b 3)
 	
-add_test(test_parallel_None_F   aqtest -r 4 -n 20 -l 2000 -b 0)
-add_test(test_parallel2_None_F  aqtest -r 8 -n 20 -l 2000 -b 0)
+add_test(test_parallel_None_F   aqtest -r 4 -n 20 -l 2000 -b 0 -f)
+add_test(test_parallel2_None_F  aqtest -r 8 -n 20 -l 2000 -b 0 -f)
 
-add_test(test_parallel_Drop_F   aqtest -r 4 -n 20 -l 2000 -b 1)
-add_test(test_parallel2_Drop_F  aqtest -r 8 -n 20 -l 2000 -b 1)
+add_test(test_parallel_Drop_F   aqtest -r 4 -n 20 -l 2000 -b 1 -f)
+add_test(test_parallel2_Drop_F  aqtest -r 8 -n 20 -l 2000 -b 1 -f)
 
-add_test(test_parallel_Wait_F   aqtest -r 4 -n 20 -l 2000 -b 2)
-add_test(test_parallel2_Wait_F  aqtest -r 8 -n 20 -l 2000 -b 2)
+add_test(test_parallel_Wait_F   aqtest -r 4 -n 20 -l 2000 -b 2 -f)
+add_test(test_parallel2_Wait_F  aqtest -r 8 -n 20 -l 2000 -b 2 -f)
 
-add_test(test_parallel_Refuse_F   aqtest -r 4 -n 20 -l 2000 -b 3)
-add_test(test_parallel2_Refuse_F  aqtest -r 8 -n 20 -l 2000 -b 3)
+add_test(test_parallel_Refuse_F   aqtest -r 4 -n 20 -l 2000 -b 3 -f)
+add_test(test_parallel2_Refuse_F  aqtest -r 8 -n 20 -l 2000 -b 3 -f)

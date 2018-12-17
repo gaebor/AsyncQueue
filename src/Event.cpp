@@ -18,12 +18,6 @@ namespace aq{
     {
     }
 
-
-    Event::Event(bool autoReset): EventImpl(autoReset ? EVENT_AUTORESET_IMPL : EVENT_MANUALRESET_IMPL)
-    {
-    }
-
-
     Event::~Event()
     {
     }

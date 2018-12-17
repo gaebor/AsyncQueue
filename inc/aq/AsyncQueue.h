@@ -9,10 +9,6 @@
 
 #include "aq/Event.h"
 
-#ifdef max
-#undef max
-#endif // max
-
 //! namespace AsyncQueue
 namespace aq {
     
@@ -31,12 +27,13 @@ namespace aq {
         @param _Ty stored type, it have to be copyable
         @param SeeHighWater determine whether you want to see the high water
     */
-    template<class _Ty, bool SeeHighWater = false, typename Container = std::queue<_Ty>>
+    template<class _Ty, bool SeeHighWater = false, typename _Container = std::queue<_Ty>>
     class AsyncQueue
     {
     private:
         typedef std::lock_guard<std::mutex> AutoLock;
     public:
+        typedef _Container Container;
         //! specifies limit behavior
         /*!
             it can be adjusted at any time (thread safe)
@@ -58,9 +55,9 @@ namespace aq {
             : limitBehavior(l),
             queueLimit(std::numeric_limits<size_t>::max()),
             _highWater(0),
-            _content(false),
-            _empty(false),
-            _belowLimit(false)
+            _content(EventType::EVENT_MANUALRESET),
+            _empty(EventType::EVENT_MANUALRESET),
+            _belowLimit(EventType::EVENT_MANUALRESET)
         {
             _belowLimit.set();
             _empty.set();
@@ -79,8 +76,8 @@ namespace aq {
 
         //!puts an item into the queue
         /*!
-            if the behaviour is Wait, then the call locks until the queue is small enough.
-            if the behaviour is Drop and the queue is long, then the entire queue is dropped and the new one is enqueued
+            if the behavior is Wait, then the call locks until the queue is small enough.
+            if the behavior is Drop and the queue is long, then the entire queue is dropped and the new one is enqueued
             if the EnQueue is in a locking state and a WakeUp is called, then the enqueue fails and the functions returns
         */
         bool EnQueue(const _Ty& element)
@@ -167,7 +164,7 @@ namespace aq {
 		{
 			_queue.push(element);
 			if (SeeHighWater)
-				_highWater = (_queue.size() > _highWater ? _queue.size() : _highWater);
+				_highWater = std::max(_queue.size(), _highWater);
 			_content.set();
 			_empty.reset();
 			if (_queue.size() >= queueLimit)

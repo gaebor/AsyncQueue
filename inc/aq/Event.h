@@ -16,6 +16,12 @@
 #endif
 
 namespace aq {
+    
+    enum EventType
+    {
+        EVENT_MANUALRESET = EventImpl::EVENT_MANUALRESET_IMPL, /// Manual reset event
+        EVENT_AUTORESET = EventImpl::EVENT_AUTORESET_IMPL      /// Auto-reset event
+    };
 
     class Event : private EventImpl
         /// An Event is a synchronization object that
@@ -27,20 +33,10 @@ namespace aq {
         /// for an event to become signalled.
     {
     public:
-        enum EventType
-        {
-            EVENT_MANUALRESET = EVENT_MANUALRESET_IMPL, /// Manual reset event
-            EVENT_AUTORESET = EVENT_AUTORESET_IMPL      /// Auto-reset event
-        };
-
         explicit Event(EventType type = EVENT_AUTORESET);
         /// Creates the event. If type is EVENT_AUTORESET,
         /// the event is automatically reset after
         /// a wait() successfully returns.
-
-    //@ deprecated
-        explicit Event(bool autoReset);
-        /// Please use Event::Event(EventType) instead.
 
         ~Event();
         /// Destroys the event.
