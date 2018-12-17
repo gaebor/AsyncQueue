@@ -1,12 +1,8 @@
 # AsyncQueue
 C++ portable implementation of a multi-threaded, multi-producer, multi-consumer FIFO queue.
 
-## build
-GNU `make`, or `nmake` on Visual C++.
-
-## test
-The (n)make target `run` tests for every scenario.
-See `aqtest -h` for details.
+## build & test
+[cmake](https://cmake.org/) and [ctest](https://gitlab.kitware.com/cmake/community/wikis/doc/ctest/Testing-With-CTest)
 
 ## usage
 Link against the `asyncqueue` static library and enable C++11 in your code.
