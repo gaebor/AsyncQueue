@@ -6,25 +6,36 @@
 namespace aq {
 
 	//! simple class to measure time, not thread safe!
+    template<class ClockTy = std::chrono::steady_clock>
     class Clock
     {
     public:
 		//! marks instantiation time
-        Clock();
+        Clock()
+        {
+            Tick();
+        }
 		//! marks current time
-        void Tick();
+        void Tick()
+        {
+            _timePoint = MyClock::now();
+        }
 		//! returns time between former time mark and now
 		/*!
 			@return time since last Tick, construction.
 		*/
-        double Tock();
-        ~Clock();
+        double Tock()
+        {
+            auto const now = MyClock::now();
+            const auto elapsed = _frequency * (now - _timePoint).count();
+            return elapsed;
+        }
+        ~Clock(){}
     private:
-        typedef std::chrono::steady_clock MyClock;
-        typedef MyClock::duration MyDuration;
-		MyClock::time_point _timePoint;
-        static const double _frequency;
-        static double GetFrequency();
+        typedef ClockTy MyClock;
+        typedef typename MyClock::duration MyDuration;
+        typename MyClock::time_point _timePoint;
+        static constexpr double _frequency = (double)MyDuration::period::num / MyDuration::period::den;
     };
 }
 

@@ -44,7 +44,7 @@ static void Test(QueueType& queue, int run)
     typedef typename QueueType::Container::value_type MessageType;
     MessageMaker<MessageType> messageMaker;
 
-    aq::Clock timeStart, timePush, timeConsume;
+    aq::Clock<> timeStart, timePush, timeConsume;
 
     MessageType output1, output2;
 

@@ -51,9 +51,9 @@ namespace aq {
         */
         std::atomic<size_t> queueLimit;
 
-        AsyncQueue(LimitBehavior l = None)
+        AsyncQueue(LimitBehavior l = None, size_t limit = std::numeric_limits<size_t>::max())
             : limitBehavior(l),
-            queueLimit(std::numeric_limits<size_t>::max()),
+            queueLimit(limit),
             _highWater(0),
             _content(EventType::EVENT_MANUALRESET),
             _empty(EventType::EVENT_MANUALRESET),

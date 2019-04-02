@@ -1,19 +1,21 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.1)
 project (AsyncQueue)
 
-include_directories(inc)
+set (CMAKE_CXX_STANDARD 11)
 
-if(UNIX)
-add_compile_options("-std=c++11" "-pthread")
-SET( CMAKE_EXE_LINKER_FLAGS  "-pthread" )
-endif(UNIX)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inc")
+
+set(Sources src/Event.cpp src/Exception.cpp)
 
 add_executable(aqtest src/Test.cpp )
+add_library(asyncqueue ${Sources})
+target_link_libraries(aqtest asyncqueue)
 
-add_library(asyncqueue src/Clock.cpp src/Event.cpp src/Exception.cpp)
-
-target_link_libraries (aqtest asyncqueue)
-
+if(UNIX)
+    add_compile_options("-pthread")
+    target_link_libraries(aqtest pthread)
+endif(UNIX)
+    
 include(CTest)
 
 add_test (testhelp aqtest -h)
