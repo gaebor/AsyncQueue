@@ -55,9 +55,9 @@ namespace aq {
             : limitBehavior(l),
             queueLimit(limit),
             _highWater(0),
-            _content(EventType::EVENT_MANUALRESET),
-            _empty(EventType::EVENT_MANUALRESET),
-            _belowLimit(EventType::EVENT_MANUALRESET)
+            _content(),
+            _empty(),
+            _belowLimit()
         {
             _belowLimit.set();
             _empty.set();
@@ -103,7 +103,7 @@ namespace aq {
 					return true;
 				}
 			case LimitBehavior::Wait:
-				_belowLimit.wait();
+                _belowLimit.wait();
 			default:
 			{
 				AutoLock lock(_mutex);
@@ -129,10 +129,10 @@ namespace aq {
             _empty.wait();
         }
 
-        bool DeQueue(_Ty& element, long miliseconds)
-        {
-			return _content.tryWait(miliseconds) && DeQueue_internal(element);
-        }
+   //     bool DeQueue(_Ty& element, long miliseconds)
+   //     {
+			//return _content.tryWait(miliseconds) && DeQueue_internal(element);
+   //     }
 
         //!this causes the DeQueue to return false if the queue was empty, otherwise nothing happens
         void WakeUpIfEmpty()
@@ -194,7 +194,7 @@ namespace aq {
             return true;
         }
         size_t _highWater;
-        Event _content, _empty, _belowLimit;
+        Event<false> _content, _empty, _belowLimit;
         std::mutex _mutex;
         Container _queue;
     };

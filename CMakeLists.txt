@@ -5,11 +5,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/inc")
 
-set(Sources src/Event.cpp src/Exception.cpp)
-
-add_executable(aqtest src/Test.cpp )
-add_library(asyncqueue ${Sources})
-target_link_libraries(aqtest asyncqueue)
+add_executable(aqtest src/Test.cpp)
 
 if(UNIX)
     add_compile_options("-pthread")
