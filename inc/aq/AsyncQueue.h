@@ -13,12 +13,12 @@
 namespace aq {
     
     //! you can control the behavior of the overloaded queue
-    enum LimitBehavior
+    enum LimitBehavior : int
     {
-        None, //!< the queue can grow as much as it can, queueLimit is irrelevant
-        Drop, //!< drop elements if queue size is above the given limit
-        Wait, //!< wait until the queue size drops below the given limit
-        Refuse, //!< refuse to enqueue elements if queue size is above the given limit
+        None = 0, //!< the queue can grow as much as it can, queueLimit is irrelevant
+        Drop = 1, //!< drop elements if queue size is above the given limit
+        Wait = 2, //!< wait until the queue size drops below the given limit
+        Refuse = 3, //!< refuse to enqueue elements if queue size is above the given limit
     };
     
     //!simple producer/consumer tool
@@ -72,6 +72,7 @@ namespace aq {
         {
             WakeUp();
             _content.reset();
+            _highWater = 0;
         }
 
         //!puts an item into the queue
@@ -93,6 +94,12 @@ namespace aq {
 					EnQueue_internal(element);
 					return true;
 				}
+                else
+                {
+                    AutoLock lock(_mutex);
+                    EnQueue_internal(element);
+                    return true;
+                }
 			case LimitBehavior::Refuse:
 				if (_queue.size() >= queueLimit)
 					return false;

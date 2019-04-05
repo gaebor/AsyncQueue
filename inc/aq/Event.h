@@ -1,8 +1,5 @@
-
-//          Copyright Gábor Borbély 2017.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// https://stackoverflow.com/a/4793662/3583290
+// by Maxim Egorushkin
 
 #ifndef INCLUDED_AQ_Event_H
 #define INCLUDED_AQ_Event_H
@@ -10,7 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace aq {    
+namespace aq {
 
     template<bool auto_reset = true>
     class Event
