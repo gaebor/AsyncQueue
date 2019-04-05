@@ -1,6 +1,10 @@
+#!/usr/bin/env bash
+
 n=32
 thread=0
 thread_type=0
+
+executable=./`hostname`/event
 
 min=10
 
@@ -37,36 +41,40 @@ case $key in
 esac
 done
 
+baseline=()
+
 for m in ${n[*]}
 do
     for chunk in `seq $min $m`
     do
         echo -n "chunk: $chunk n: $m, "
-        if [ ! -f test.c$chunk.n$m.txt ]
-        then 
-            env time -f "%esec" ./event -c $chunk -n $m --type 0 2>&1 > test.c$chunk.n$m.txt
-        else
-            echo
-        fi
+        TIME=`env time -f "%e" $executable -c $chunk -n $m --type 0 2>&1 > test.c$chunk.n$m.txt`
+        echo $TIME sec
     done
     echo 
+    baseline+=("$TIME")
 done
 
 nmax=`echo "${n[*]}" | tr ' ' '\n' | sort -nr | head -n1`
 
-echo -n "n/c"
+echo -n "n\c"
 for chunk in `seq $min $((nmax-thread))`
 do
     echo -n "	$chunk"
 done
 echo
 
-for m in ${n[*]}
+this_thread=$((2**thread))
+
+len=${#n[@]}
+for (( i=0; i<$len; i++ ))
 do
+    m=${n[$i]}
+    reftime=${baseline[$i]}
+    echo -n "$m"
     for chunk in `seq $min $((m-thread))`
     do
-        echo -n "$m"
-        result="`env time -f "%e" ./event -c $chunk -n $m --type $thread_type -t $thread 2>&1 > test.txt`"
+        result="`env time -f "%e" $executable -c $chunk -n $m --type $thread_type -t $this_thread 2>&1 > test.txt`"
         errorcode=$?
         if [ $errorcode -ne 0 ]
         then
@@ -76,6 +84,8 @@ do
             if [ -n "$difference" ]
             then
                 result=DIFF
+            else
+                result=`python -c "print('%.2f%%' % (100.0*$result*$this_thread/$reftime-100))"`
             fi
         fi
         echo -n "	$result"

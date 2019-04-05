@@ -24,7 +24,7 @@ struct WorkerArgs
     aq::Event<> compute, done;
 };
 
-void Test(int thread_option, int num_threads, size_t n, size_t chunks)
+void Test(int thread_option, size_t num_threads, size_t n, size_t chunks)
 {
     std::vector<WorkerArgs> args(num_threads);
     switch (thread_option)
@@ -108,7 +108,7 @@ int main(int argc, const char* argv[])
 {
     size_t n = 20;
     size_t chunks = 16;
-    int threads = 1;
+    size_t threads = 1;
     int thread_tactic = 1;
 
     arg::Parser parser("Test tool for Event and Thread performance.");
@@ -124,6 +124,11 @@ int main(int argc, const char* argv[])
 
     parser.Do(argc, argv);
 
+    if (!threads)
+    {
+        std::cerr << "number of threads should be positive!" << std::endl;
+        exit(1);
+    }
     Test(thread_tactic, threads, (size_t)1 << n, (size_t)1 << chunks);
 
 }
