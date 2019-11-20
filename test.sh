@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
 
+function compile
+{
+    mkdir -p bin
+    cd bin
+    
+    if cmake -DCMAKE_BUILD_TYPE=Release .. && make
+    then
+        cd ..
+    else
+        exit 1
+    fi
+}
+
 n=32
 thread=0
 thread_type=0
 
-executable=./`hostname`/event
+compile
+
+executable=./bin/event
 
 min=10
 
